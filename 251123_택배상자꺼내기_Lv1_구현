@@ -1,0 +1,44 @@
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int solution(int n, int w, int num) {
+    int answer = 0;
+    int floor = 0;
+    int lastidx = 0;
+    int boxfloor=0;
+    int boxidx = 0;
+    
+    if(n%w == 0) floor = n/w;
+    else floor = n/w+1;
+    
+    if(num%w == 0) boxfloor = num/w;//2
+    else boxfloor = num/w+1;
+    
+    answer = floor - boxfloor+1;
+    
+    if(boxfloor % 2 == 1) {
+        boxidx = num%w-1;
+        if(boxidx == -1) boxidx = w-1;
+    }
+    else{
+        boxidx = w - num%w;
+        if(boxidx == w) boxidx = 0;
+    }
+    
+    if(floor % 2 == 1){
+        lastidx = n%w-1;
+        if(lastidx == -1) lastidx = w-1;
+        if(boxidx > lastidx) answer--;
+    }
+    else{
+        lastidx = w - n%w;
+        if(lastidx == w) lastidx = 0;
+        if(boxidx<lastidx) answer--;
+    }
+    
+    
+    
+    return answer;
+}
