@@ -1,0 +1,27 @@
+//O(1)
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int solution(vector<int> wallet, vector<int> bill) {
+    int answer = 0;
+    int wallet_long_len = max(wallet[0],wallet[1]);
+    int wallet_short_len = min(wallet[0],wallet[1]);
+    
+    int bill_short_len = min(bill[0],bill[1]);
+    int bill_long_len = max(bill[0],bill[1]);
+    while(wallet_short_len < bill_short_len or wallet_long_len < bill_long_len){
+        if(bill[0] > bill[1]){
+            bill[0]/=2;
+        }
+        else{
+            bill[1]/=2;
+        }
+        answer++;
+        bill_short_len = min(bill[0],bill[1]);
+        bill_long_len = max(bill[0],bill[1]);
+    }
+    
+    return answer;
+}
