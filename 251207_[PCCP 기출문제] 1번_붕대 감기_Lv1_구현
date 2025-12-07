@@ -1,0 +1,18 @@
+#O(attacks)
+#어렵지 않은 구현이었음.
+#공격을 기준으로 그 전까지 회복(최대체력까지), 피해 받은후 사망하면 return
+def solution(bandage, health, attacks):
+    answer = 0
+    time = 0
+    presen_health = health
+    for i in range(len(attacks)):
+        presen_health += bandage[1]*(attacks[i][0]-time-1)
+        presen_health += bandage[2]*((attacks[i][0]-time-1)//bandage[0])
+        presen_health = min(presen_health,health)
+        presen_health -= attacks[i][1]
+        if presen_health <= 0:
+            answer = -1
+            return answer
+        time = attacks[i][0]
+    answer = presen_health
+    return answer
