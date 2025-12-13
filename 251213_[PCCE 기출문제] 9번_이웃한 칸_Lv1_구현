@@ -1,0 +1,22 @@
+O(1)
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int solution(vector<vector<string>> board, int h, int w) {
+    int answer = 0;
+    int boardlen = board.size();
+    string color;
+    color = board[h][w];
+    int dirh[] = {0,0,-1,1};
+    int dirw[] = {1,-1,0,0};
+    for(int i=0;i<4;i++){
+        int forh = dirh[i]+h;
+        int forw = dirw[i]+w;
+        if (forh<0 or forh>=boardlen or forw<0 or forw>=boardlen) continue;
+        if (board[forh][forw] == color) answer++;
+    }
+        
+    return answer;
+}
