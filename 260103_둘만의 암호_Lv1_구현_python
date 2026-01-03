@@ -1,0 +1,16 @@
+#O(s*index)
+#ord chr기억하기
+def solution(s, skip, index):
+    answer = ''
+    for i in s:
+        n = ord(i)
+        for _ in range(index):
+            n+=1
+            if n == ord('z')+1:
+                    n = ord('a')
+            while chr(n) in skip:
+                n+=1
+                if n == ord('z')+1:
+                    n = ord('a')
+        answer += chr(n)
+    return answer
