@@ -1,0 +1,47 @@
+#O(privacies+terms)
+#시간계산을 풀어서 더하기로 하든지
+#-1하고 나머지 구하고 +1 // -1하고 몫 더하기
+#cY += (MM - 1) // 12
+#cM = (MM - 1) % 12 + 1
+
+def solution(today, terms, privacies):
+    answer = []
+    maps = {}
+    tY = int(today[0:4])
+    tM = int(today[5:7])
+    tD = int(today[8:])
+    
+    ttime = tY * 28*12 + tM * 28 + tD
+    for term in terms:
+        maps[term[0]] = int(term[2:])
+        
+    cnt = 1
+    for case in privacies:
+        cD = int(case[8:10])
+        cM = int(case[5:7])
+        cY = int(case[0:4])
+        
+        ctime = cY*28*12+ cM*28 + cD -1 + 28*maps[case[11]]
+        
+        if(ttime > ctime):
+            answer.append(cnt)
+            
+        cnt+=1
+
+    return answer
+'''
+cD = int(case[8:10])
+        cM = int(case[5:7])
+        cY = int(case[0:4])
+        
+        cD -=1
+        if cD == 0:
+            cD = 28
+            cM-=1
+        if cM == 0:
+            cM = 12
+            cY -=1
+        MM = cM + maps[case[11]]
+        cY += (MM - 1) // 12
+        cM = (MM - 1) % 12 + 1
+        '''
