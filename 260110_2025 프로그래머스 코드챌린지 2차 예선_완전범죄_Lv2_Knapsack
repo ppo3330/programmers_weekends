@@ -1,0 +1,76 @@
+//O(info * m)
+//knapsack 문제인데 처음에는 완전 하드코딩으로 순서를 만들고 그 순서에 맞게 정렬한 후에 했음
+//알고리즘 기억하기... 물건 루프 안에 기준 루프
+//dp에서 i는 물건들 j는 n의 값이었음.
+//newdp를 이용해서 해당 물건에 대해서 m상태가 나올 수 있으면 그때 A가 훔칠지 B가 훔칠지
+//
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int solution(vector<vector<int>> info, int n, int m) {
+    int answer = 1e9;
+    
+    vector<vector<int>> dp(info.size()+1,vector<int>(m,1e9));
+    
+    dp[0][0] = 0;
+    
+    for(int i=0;i<info.size();i++){
+        auto newdp = dp;
+        for(int j=0;j<m;j++){
+            if (dp[i][j] == 1e9) continue;
+            
+            if(dp[i][j] + info[i][0] < n){
+                newdp[i+1][j] = min(newdp[i+1][j],dp[i][j] + info[i][0]);
+            }
+            int newj = j+ info[i][1]
+            if(newj< m){
+                newdp[i+1][newj] = min(newdp[i+1][newj], dp[i][j]); 
+            }
+        }
+        dp = newdp;
+    }
+    
+    for(int i=0;i<m;i++){
+        answer = min(dp[info.size()][i], answer);
+    }
+    if (answer == 1e9) return -1;
+    return answer;
+}
+
+/*
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int solution(vector<vector<int>> info, int n, int m) {
+    int recordn = n;
+    int answer = 0;
+    vector<pair<int,int>> ORDER = {{3,1},{3,2},{2,1},{3,3},{2,2},{1,1},{2,3},{1,2},{1,3}};
+    
+    vector<pair<int,int>> order;
+    for(int i=0;i<9;i++){
+        for(int j=0;j<info.size();j++){
+            if( info[j][0] == ORDER[i].first and info[j][1] == ORDER[i].second){
+                order.push_back(ORDER[i]);
+            }
+        }
+    }
+    
+    for(int i=0;i<order.size();i++){
+        if(m - order[i].second>0){
+            m-=order[i].second;
+        }
+        else{
+            n-=order[i].first;
+        }
+    }
+    
+    if(n>0) answer = recordn-n;
+    else answer = -1;
+    //3-1,3-2,2-1,3-3,2-2,1-1,2-3,1-2,1-3
+    return answer;
+}
+*/
