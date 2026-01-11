@@ -1,0 +1,75 @@
+#O(C(n,5) * m) 이나 실제로는 C(5,n)이 훨씬 작음(가지치기)
+#밑에 보면 조합을 뽑는건 
+#from itertools import combinations
+#list(combinations(range(1, n + 1), 5)) 로 5개짜리 1 ~ n값으로 나오는 조합 만들 수 있음.
+#set(seq) & set(q[i]) 로 교집합을 쉽게 찾을 수 있음.
+#가지치기 사용.
+
+def chk(seq,q,ans):
+    remain = 5 - len(seq)
+    for i in range(len(ans)):
+        cnt = 0
+        for t in q[i]:
+            if t in seq:
+                cnt+=1
+                
+        if cnt > ans[i]:
+            return False
+        elif cnt + remain < ans[i]:
+            return False
+    return True
+
+result = 0
+
+def cord(n,st,q,ans,seq):
+    global result
+    
+    if not chk(seq,q,ans):
+        return
+    
+    if len(seq) == 5:
+        result +=1
+        return
+    
+    for i in range(st,n+1):
+        seq.append(i)
+        cord(n,i+1,q,ans,seq)
+        seq.pop(len(seq)-1)
+
+def solution(n, q, ans):
+    answer = 0
+    global result
+    seq = []
+    cord(n,1,q,ans,seq)
+    answer = result
+    return answer
+
+
+'''
+from itertools import combinations
+
+def solution(n, q, ans):
+    # 가능한 모든 비밀 코드 조합 생성 (1부터 n까지 중 5개 선택)
+    all_combinations = list(combinations(range(1, n + 1), 5))
+
+    valid_count = 0
+
+    # 각 조합이 조건을 만족하는지 확인
+    for comb in all_combinations:
+        is_valid = True
+
+        for i in range(len(q)):
+            # q[i]와 comb의 교집합 개수 계산
+            intersection_count = len(set(q[i]) & set(comb))
+
+            # 교집합 개수가 ans[i]와 다르면 조건 불만족
+            if intersection_count != ans[i]:
+                is_valid = False
+                break
+
+        # 모든 조건을 만족하면 유효한 조합으로 간주
+        if is_valid:
+            valid_count += 1
+
+    return valid_count
+'''
