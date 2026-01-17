@@ -1,0 +1,82 @@
+//O( (r+c) * x)
+//이전 위치를 기준으로 answer를 추가할지 계산해서 오류가 있었음
+//처음 설계에 오래걸림
+#include <string>
+#include <vector>
+
+using namespace std;
+
+int solution(vector<vector<int>> points, vector<vector<int>> routes) {
+    int answer = 0;
+    int x = routes.size();
+    
+    vector<pair<int,pair<int,int>>> robots(x);
+    int robots_num = x;
+    vector<int> robot_exist(x,0);
+    
+    for(int i=0;i<x;i++){
+        int r = points[routes[i][0]-1][0];
+        int c= points[routes[i][0]-1][1];
+        robots[i] = {1,{r,c}};
+    }
+    
+    vector<vector<int>> cord(101,vector<int>(101,0));
+    for(int i=0;i<x;i++){
+        cord[robots[i].second.first][robots[i].second.second]++;
+    }
+    for(int i=0;i<101;i++){
+        for(int j=0;j<101;j++){
+            if(cord[i][j] > 1) answer++;
+        }
+    }
+    
+    while(robots_num > 0){
+        for(int i=0;i<x;i++){
+            if(robot_exist[i] == 2) continue;
+            int nxt = robots[i].first;
+            int nxtr = points[routes[i][nxt]-1][0];
+            int nxtc = points[routes[i][nxt]-1][1];
+            int robotr = robots[i].second.first;
+            int robotc = robots[i].second.second;
+            
+            if(robotr < nxtr){
+                robots[i].second.first++;
+            }
+            else if (robotr > nxtr){
+                robots[i].second.first--;
+            }
+            else if (robotc < nxtc){
+                robots[i].second.second++;
+            }
+            else if (robotc > nxtc) {
+                robots[i].second.second--;
+            }
+            
+            if(robots[i].second.first== nxtr and robots[i].second.second == nxtc){
+                if(robots[i].first == routes[i].size()-1){
+                    robot_exist[i] = 1;
+                    robots_num--;
+                }
+                else{
+                    robots[i].first++;
+                }
+            }
+        }
+        cord.assign(101,vector<int>(101,0));
+        for(int i=0;i<x;i++){
+            if(robot_exist[i] == 2) continue;
+            cord[robots[i].second.first][robots[i].second.second]++;
+        }
+        for(int i=0;i<x;i++){
+            if(robot_exist[i] == 1) robot_exist[i] = 2;
+        }
+        
+        for(int i=0;i<101;i++){
+            for(int j=0;j<101;j++){
+                if(cord[i][j] > 1) answer++;
+            }
+        }
+    }
+    
+    return answer;
+}
