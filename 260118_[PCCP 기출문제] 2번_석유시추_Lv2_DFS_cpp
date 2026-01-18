@@ -1,0 +1,60 @@
+#O(n * m)
+#oil을 map을 사용한게 처음이고 이후에 그냥 vector로 바꿈. 시간에는 큰 차이 없는듯.
+#dfs로 오일을 찾아 크기를 찾고 번호를 부여
+#열마다 들어가보며 번호에 맞게 더함. (oil함수를 통해서 해당 기름집단이 더해졌는지 알 수 있게 함.)
+
+#include <string>
+#include <vector>
+#include <unordered_map>
+
+using namespace std;
+
+int dfs(int n, int m, const vector<vector<int>>& land, vector<vector<int>>& visited,int x, int y,int cnt){
+    visited[x][y] = cnt;
+    int dirx[] = {0,0,1,-1};
+    int diry[] = {1,-1,0,0};
+    int num = 1;
+    for(int i=0;i<4;i++){
+        int forx = dirx[i] + x;
+        int fory = diry[i] + y;
+        
+        if (forx <0 or forx >= n or fory < 0 or fory >= m) continue;
+        if (land[forx][fory] == 1 and visited[forx][fory] == 0){
+            num += dfs(n,m,land,visited,forx,fory,cnt);
+        }
+    }
+    return num;
+}
+
+int solution(vector<vector<int>> land) {
+    int answer = 0;
+    int n = land.size();
+    int m = land[0].size();
+    vector<vector<int>> visited(n,vector<int>(m,0));
+    vector<int> oil(1,0);
+    
+    int cnt = 1;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<m;j++){
+            if(land[i][j] == 0 or visited[i][j] !=0) continue;
+            oil.push_back(dfs(n,m,land,visited,i,j,cnt));
+            cnt ++;
+        }
+    }
+    
+    
+    for(int i=0;i<m;i++){
+        vector<int> mapchk(cnt+1,0);
+        int result = 0;
+        for(int j=0;j<n;j++){
+            if(visited[j][i] > 0 and mapchk[visited[j][i]] == 0){
+                mapchk[visited[j][i]] = 1;
+                result += oil[visited[j][i]];
+            }
+        }
+        answer = max(result,answer);
+    }
+    
+    
+    return answer;
+}
