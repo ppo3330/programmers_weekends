@@ -1,0 +1,61 @@
+#O(edges)
+#솔직히 내가 좀 대견했다.
+#시작 노드: indegree가 0이고 다음 노드가 2개 이상
+#시작 노드를 기준으로 바로 다음에 있는 노드별로 케이스를 확인
+#다음 노드수가 많으면 8자, 다음 노드가 없으면 막대, 처음 자신으로 돌아오면 도넛. 모두 포함 안되면 그 다음 노드를 확인.
+
+def solution(edges):
+    answer = [0,0,0,0]
+    
+    
+    nodenum = 0
+    have_indegree = []
+    for s,e in edges:
+        have_indegree.append(e)
+        nodenum = max(nodenum,s,e)
+        
+    link = [[] for _ in range(nodenum+1)]
+    indegrees = [0]*(nodenum+1)
+        
+    
+    for s,e in edges:
+        link[s].append(e)
+        indegrees[e]+=1
+    
+    for i in range(len(indegrees)):
+        if indegrees[i] == 0 and len(link[i]) > 1:
+            answer[0] = i
+            break
+                
+            
+
+    #시작노드 확인.
+    nodes = []
+    startnode = answer[0]
+    for i in link[startnode]:
+        nodes.append(i)   
+    
+    for i in nodes:
+        cur = i
+        case = 2
+        if len(link[cur]) > 1:
+                case = 3
+        while len(link[cur]) == 1:
+            cur = link[cur][0]
+            if len(link[cur]) < 1:
+                break
+            if len(link[cur]) > 1:
+                case = 3
+                break
+            if cur == i:
+                case = 1
+                break
+        if case == 1:
+            answer[1] +=1
+        elif case == 2:
+            answer[2] +=1
+        elif case == 3:
+            answer[3] +=1
+            
+
+    return answer
