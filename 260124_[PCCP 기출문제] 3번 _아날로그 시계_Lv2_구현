@@ -1,0 +1,42 @@
+//O(1) (h2 * 3600 + m2 * 60 + s2)
+//생각보다 어려운 문제는 아닌데 어렵게 풀었다. ㅠㅠ
+//시간을 초로 만들어서 해당 초가 될때까지 sec1 1초씩
+//1초 더할때마다 초침이 넘어가면 +1
+//예외로 시작이 0시 12시 정각일때는 +1 중간에 12시 정각이 껴있으면 -1
+#include <string>
+#include <vector>
+
+using namespace std;
+
+void sec1(int& shand1, int& mhand1, int& hhand1, int& answer) {
+    int shandlt = (shand1 + 720);
+    int mhandlt = (mhand1 + 12);
+    int hhandlt = (hhand1 + 1);
+
+    if (shand1 < hhand1 and shandlt >= hhandlt) answer++;
+    if (shand1 < mhand1 and shandlt >= mhandlt) answer++;
+
+    shand1 = shandlt % 43200;
+    mhand1 = mhandlt % 43200;
+    hhand1 = hhandlt % 43200;
+}
+
+int solution(int h1, int m1, int s1, int h2, int m2, int s2) {
+    int answer = 0;
+
+    int shand1 = s1 * 720;
+    int mhand1 = m1 * 720 + s1 * 12;
+    int hhand1 = h1 * 3600 + m1 * 60 + s1;
+
+    int t1 = h1 * 3600 + m1 * 60 + s1;
+    int t2 = h2 * 3600 + m2 * 60 + s2;
+
+    if (t1 == 0 or t1==43200) answer++;
+    if (t1 < 43200 and t2 >= 43200) answer--;
+    while (t1 < t2){
+        sec1(shand1, mhand1, hhand1, answer);
+        t1++;
+    }
+
+    return answer;
+}
