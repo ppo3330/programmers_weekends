@@ -1,0 +1,19 @@
+#O(e)
+#누적정렬이 필요한줄 알았는데 아니었음.
+#누적정렬을 원하면 targets.sort(key=lambda x: (x[1],x[0])) 으로 하면됨
+#sort(key=lambda x: x[1]) 형태 기억하기
+def solution(targets):
+    answer = 0
+    l = len(targets)
+    
+    targets.sort(key=lambda x:x[1])
+
+    t=0
+    while t < l:
+        answer+=1
+        standard = targets[t][1]
+        i = 1
+        while (t+i) < l and targets[t+i][0] < standard:
+            i+=1
+        t+=i
+    return answer
