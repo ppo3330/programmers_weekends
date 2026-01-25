@@ -1,0 +1,45 @@
+//O(sequence)
+//dp랑 투포인터 사용
+//쉬웠음
+
+#include <string>
+#include <vector>
+
+using namespace std;
+
+vector<int> solution(vector<int> sequence, int k) {
+    vector<int> answer;
+    int ansleft = 0;
+    int ansright = 0;
+    vector<int> dp;
+    dp.push_back(0);
+    for(int i=0;i<sequence.size();i++){
+        dp.push_back(dp[i] + sequence[i]);
+    }
+    int len = 1e9;
+    
+    int left = 0;
+    int right = 0;
+    while(left<= right and right < dp.size() and left < dp.size()){
+        int res = dp[right]-dp[left];
+        if(res < k){
+            right ++;
+        }
+        else if(res > k){
+            left ++;
+        }
+        else{
+            if(len > right-left + 1){
+                len = right-left +1;
+                ansleft = left;
+                ansright = right;
+            }
+            right ++;
+        }
+    }
+    
+    answer.push_back(ansleft);
+    answer.push_back(ansright-1);
+
+    return answer;
+}
