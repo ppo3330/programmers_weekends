@@ -1,0 +1,103 @@
+//O(minerals)
+//dp를 이용해 구현
+//구조체 선언 기억하기
+//구조체는 =으로 해도 값만 복사함.
+//for문을 잘못 적어놔서 오류가 났었음.
+
+#include <string>
+#include <vector>
+#include <queue>
+
+using namespace std;
+
+int dia(int n,vector<string> minerals){
+    int result = 0;
+    for(int i=n;i< n+5;i++ ){
+        if (i >= minerals.size()) return result;
+        result++;
+    }
+    
+    return result;
+}
+
+int iron(int n,vector<string> minerals){
+    int result = 0;
+    for(int i=n;i< n+5;i++ ){
+        if (i >= minerals.size()) return result;
+        if (minerals[i] == "diamond")
+            result += 5;
+        else result++;
+    }
+    return result;
+}
+
+int stone(int n,vector<string> minerals){
+    int result = 0;
+    for(int i=n;i< n+5;i++ ){
+        if (i >= minerals.size()) return result;
+        if(minerals[i] == "diamond")
+            result +=25;
+        else if(minerals[i] == "iron")
+            result +=5;
+        else result++;
+    }
+    return result;
+}
+
+
+struct tools{
+    int diatool;
+    int irontool;
+    int stonetool;
+    int tired = 0;
+    int used = 0;
+};
+
+
+int solution(vector<int> picks, vector<string> minerals) {   
+    int answer = 1e9;
+    tools tool;
+    tool.diatool = picks[0];
+    tool.irontool = picks[1];
+    tool.stonetool = picks[2];
+    int total = picks[0]+picks[1]+picks[2];
+    queue<tools> q;
+    q.push(tool);
+    while(!q.empty()){
+        auto cur = q.front();
+        q.pop();
+        if(cur.used == total or cur.used*5 >= minerals.size()){
+            answer = min(answer, cur.tired);
+            continue;
+        } 
+        
+        if(cur.diatool > 0){
+            tools nxttool;
+            nxttool = cur;
+            nxttool.diatool--;
+            nxttool.used++;
+            nxttool.tired += dia(cur.used * 5,minerals);
+            q.push(nxttool);
+        }
+        if(cur.irontool > 0){
+            tools nxttool;
+            nxttool = cur;
+            nxttool.irontool--;
+            nxttool.used++;
+            nxttool.tired += iron(cur.used * 5,minerals);
+            q.push(nxttool);
+        }
+        if(cur.stonetool > 0){
+            tools nxttool;
+            nxttool = cur;
+            nxttool.stonetool--;
+            nxttool.used++;
+            nxttool.tired += stone(cur.used * 5,minerals);
+            q.push(nxttool);
+        }
+    }
+ 
+    
+
+    return answer;
+}
