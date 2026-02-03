@@ -1,0 +1,59 @@
+//O(hw)
+//BFS기본
+#include <string>
+#include <vector>
+#include <queue>
+
+using namespace std;
+
+int solution(vector<string> board) {
+    int answer = 0;
+    int h = board.size();
+    int w = board[0].size();
+    pair<int,int> R;
+    pair<int,int> G;
+    int dx[] = {1,-1,0,0};
+    int dy[] = {0,0,1,-1};
+    
+    vector<vector<int>> visited(h,vector<int>(w,1e9));
+    
+    for(int i=0;i<h;i++){
+        for(int j=0;j<w;j++){
+            if(board[i][j] == 'R') R = {i,j};
+            if(board[i][j] == 'G') G = {i,j};
+        }
+    }
+    
+    queue<pair<int,int>> q;
+    q.push(R);
+    visited[R.first][R.second] = 0;
+    
+    while(!q.empty()){
+        int x = q.front().first;
+        int y = q.front().second;
+        int cur = visited[x][y];
+        q.pop();
+        
+        for(int i=0;i<4;i++){
+            int forx = x + dx[i];
+            int fory = y + dy[i];
+            if (forx < 0 or forx >= h or fory < 0 or fory >= w) continue;
+            while (forx >= 0 and forx < h and fory >=0 and fory < w and board[forx][fory] != 'D'){
+                forx += dx[i];
+                fory += dy[i];
+            }
+            forx -= dx[i];
+            fory -= dy[i];
+            if(visited[forx][fory] > cur + 1){
+                visited[forx][fory] = cur + 1;
+                q.push({forx,fory});
+            }
+        }
+    }
+    
+    answer = visited[G.first][G.second];
+    if (answer == 1e9) answer = -1;
+    
+    
+    return answer;
+}
