@@ -1,0 +1,22 @@
+#O(balls)
+#원쿠션 문제 어디선가 풀어봤음. 대각선은 신경안써도 되고 네방향으로 거리 구한후에 중간에 공이 있는경우만 제외하면 됨.
+
+def solution(m, n, startX, startY, balls):
+    answer = []
+    
+    for ballx, bally in balls:
+        left = (startX + ballx) * (startX + ballx) + (startY - bally) * (startY - bally)
+        right = (m-startX + m - ballx) * (m-startX + m - ballx) + (startY - bally) * (startY - bally)
+        up = (n-startY + n - bally) * (n-startY + n - bally) + (startX - ballx)*(startX - ballx)
+        down = (startY + bally)*(startY + bally)  + (startX - ballx)*(startX - ballx)
+        
+        if (startX == ballx):
+            if(startY > bally): down = 1e9
+            if(startY < bally): up = 1e9
+        if (startY == bally):
+            if(startX > ballx): left = 1e9
+            if(startX < ballx): right = 1e9
+            
+        answer.append(min(left,right,up,down))
+        
+    return answer
