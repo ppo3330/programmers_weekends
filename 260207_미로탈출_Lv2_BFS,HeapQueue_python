@@ -1,0 +1,64 @@
+#O(RC)
+#BFS에 heaq사용했음.
+#오류가 났던 부분은 break로 while을 탈출하려고했는데 if로 방향 도는 루프를 탈출했음 -> hq = []로 탈출
+
+import heapq
+
+def solution(maps):
+    answer = 0
+    
+    dr = [0,0,1,-1]
+    dc = [1,-1,0,0]
+    
+    R = len(maps)
+    C = len(maps[0])
+    for i in range(R):
+        for j in range(C):
+            if maps[i][j] == 'S':
+                S = [i,j]
+                
+    visited = [[1e9]*C for _ in range(R)]
+    hq = []
+    hq.append([0,S[0],S[1]])
+    visited[S[0]][S[1]] = 0
+    while hq:
+        cnt,curr,curc = heapq.heappop(hq)
+        for i in range(4):
+            forr = curr + dr[i]
+            forc = curc + dc[i]
+            if forr <0 or forr >= R or forc <0 or forc >= C: continue
+            if maps[forr][forc] == 'X': continue
+            if visited[forr][forc] <= cnt+1: continue
+            
+            if maps[forr][forc] == 'L':
+                answer = cnt +1
+                S = [forr,forc]
+                hq = []
+                
+            visited[forr][forc] = cnt+1
+            heapq.heappush(hq,[cnt+1,forr,forc])
+            
+    if answer == 0:
+        return -1
+            
+    visited = [[1e9]*C for _ in range(R)]
+    hq = []
+    hq.append([0,S[0],S[1]])
+    visited[S[0]][S[1]] = 0
+    while hq:
+        cnt,curr,curc = heapq.heappop(hq)
+        for i in range(4):
+            forr = curr + dr[i]
+            forc = curc + dc[i]
+            if forr <0 or forr >= R or forc <0 or forc >= C: continue
+            if maps[forr][forc] == 'X': continue
+            if visited[forr][forc] <= cnt+1: continue
+            
+            if maps[forr][forc] == 'E':
+                return answer + cnt + 1
+            
+            visited[forr][forc] = cnt+1
+            heapq.heappush(hq,[cnt+1,forr,forc])
+        
+    return -1
+    
