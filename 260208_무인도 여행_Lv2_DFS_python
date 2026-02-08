@@ -1,0 +1,37 @@
+#O(XY)
+#dfs문제, bfs를 쓰려면 dequeue를 써야함.(queue를 쓰면서 bfs를 쓰고 있다고 착각했음. popleft를 해야지 dequeue임)
+#python에서는 str을 cpp이랑 다르게 해석하기때문에 maps[i][j]형식으로 도달할 수 없음. 
+#maps = [list(row) for row in maps] 이를 통해 list로 바꿔주어야 가능
+#maps에서 str형식으로 돼있어서 덧셈시 int로 더해줘야했음 + 첫번째 확인하는 칸 숫자 안더하고 있었음
+
+def solution(maps):
+    answer = []
+    x = len(maps)
+    y = len(maps[0])
+    dx = [0,0,1,-1]
+    dy = [1,-1,0,0]
+    
+    maps = [list(row) for row in maps]
+    
+    for i in range(x):
+        for j in range(y):
+            q = []
+            if maps[i][j] == 'X': continue
+            q.append([i,j])
+            result = int(maps[i][j])
+            maps[i][j] = 'X'
+            
+            while q:
+                curx,cury = q.pop()
+                for d in range(4):
+                    forx = curx + dx[d]
+                    fory = cury + dy[d]
+                    if forx<0 or forx >= x or fory<0 or fory>= y: continue
+                    if maps[forx][fory] == 'X': continue
+                    result += int(maps[forx][fory])
+                    q.append([forx,fory])
+                    maps[forx][fory] = 'X'
+            answer.append(result)
+    if len(answer) == 0: return [-1]
+    answer.sort()
+    return answer
