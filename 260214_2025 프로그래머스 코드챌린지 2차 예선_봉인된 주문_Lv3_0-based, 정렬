@@ -1,0 +1,46 @@
+//O(bans log bans)
+//1-based 를 0-based 로 변환. 후 계산
+//기억 하기!
+//1-based를 예외 처리할 수는 있지만 어려움.
+//변환 시에는 모든 케이스에서 --를 통해 해결 할 수 있음 기억하기!
+
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+string solution(long long n, vector<string> bans) {
+    string answer = "";
+    
+    vector<long long> muls(11);
+    vector<long long> results;
+    muls[0] = 1;
+    for(int i=1;i<11;i++){
+        muls[i] = muls[i-1]*26;
+    }
+    
+    for(auto ban: bans){
+        int len = ban.size();
+        long long tmp = 0;
+        for(int i= len-1; i>= 0; i--){
+            tmp += (ban[i]-'a'+1) * (muls[len-1-i]);
+        }
+        results.push_back(tmp);
+    }
+    
+    sort(results.begin(),results.end());
+    for(int i=0;i<results.size();i++){
+        if (results[i] <= n) n++;
+        else break;
+    }
+    
+    while(n){
+        n--;
+        answer += 'a' + (n%26);
+        n/=26;
+    }
+    reverse(answer.begin(),answer.end());
+    
+    return answer;
+}
