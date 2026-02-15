@@ -1,0 +1,55 @@
+#O(nodes + edges)
+#union-find로 그룹을 찾고, 그룹별로 확인
+#홀짝노드가 한개만 있는 그룹 -> 홀짝 트리
+#역홀짝노드가 한개만 있는 그룹 -> 역홀짝 트리
+
+parent = [-1]*1000001
+
+def findx(x):
+    if x != parent[x]:
+        parent[x] = findx(parent[x])
+    x = parent[x]
+    return x
+
+def unionab(a,b):
+    a = findx(a)
+    b = findx(b)
+    if a<=b:
+        parent[b] = a
+    else:
+        parent[a] = b
+
+def solution(nodes, edges):
+    answer = [0,0]
+    degree = [0]*1000001
+    chk = [False]*1000001
+    for i in nodes:
+        parent[i] = i
+        
+    for a,b in edges:
+        unionab(a,b)
+        degree[a] += 1
+        degree[b] += 1
+    
+    for i in nodes:
+        if ((i%2 == 0) and (degree[i]%2 == 0)) or ((i%2 == 1) and (degree[i]%2 == 1)):
+            chk[i] = True
+    
+    groups = [[] for i in range(1000001)]
+    for i in nodes:
+        p = findx(i)
+        groups[p].append(i)
+        
+    for group in groups:
+        res1 = 0
+        res2 = 0
+        for mem in group:
+            if chk[mem]:
+                res1 += 1
+            else:
+                res2 += 1
+        if res1 == 1:
+            answer[0] += 1
+        if res2 == 1:
+            answer[1] += 1
+    return answer
