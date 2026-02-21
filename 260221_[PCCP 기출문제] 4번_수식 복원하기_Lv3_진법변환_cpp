@@ -1,0 +1,126 @@
+//O(expressions)
+
+//X가 아닌 케이스들로 가능할만한 값을 찾고
+//X인 케이스에 넣었을때 모두 같은 값을 나타내면 그 값으로 아니면 ?로 반환
+
+//진법 변환시 세자리인 경우를 빼먹었음
+//convert함수를 만들어 했으면 편했을듯(이러면 좀더 가용성 있음)
+//가능한 값들을 찾는과정에서 기록이 안되고 최종 케이스만 반영되도록 만들었음 -> 모두 가능으로 두고 불가능의 경우 continue, 가능의 경우 확인
+
+//<sstream>, stringstream ss(s); , ss >> 를 통해 문자열을 입력받듯이 사용해서 int와 char을 따로 입력받을 수 있음.
+
+
+
+#include <string>
+#include <vector>
+#include <sstream>
+
+using namespace std;
+
+vector<string> solution(vector<string> expressions) {
+    vector<string> answer;
+    
+    vector<vector<int>> arr(expressions.size(),vector<int>(5));
+    int mn = 2;
+    
+    for(int i =0;i<expressions.size();i++){
+        string s = expressions[i];
+        
+        for(int j=0;j<s.size();j++){
+            if(s[j]>='0' and s[j]<='9'){
+                mn = max((s[j]-'0')+1,mn);
+            }
+        }        
+        stringstream ss(s);
+
+        string c;
+        char plus, equal;
+
+        ss >> arr[i][0] >> plus >> arr[i][1] >> equal >> c;
+        
+        if(plus == '+') arr[i][3] = 1;
+        else arr[i][3] = -1;
+        
+        if (c == "X") arr[i][2] = -1;
+        else arr[i][2] = stoi(c);
+    }
+    for(int i=0;i<expressions.size();i++){
+        arr[i][4] = mn;
+    }
+    
+    vector<int> nums(10,0);
+    for(int j = 0 ;j<arr.size();j++){
+        auto num = arr[j];
+
+        for(int i=num[4];i<10;i++){
+            if(nums[i] == -1) continue;
+            if(num[2] != -1){
+                if (num[3] == 1){
+                    if(i*(num[0]/10) + num[0]%10 + i*(num[1]/10) + num[1]%10 != i*i*(num[2]/100) + i*(num[2]%100/10) + num[2]%10)
+                        nums[i] = -1;
+                }
+                else if(num[3] == -1){
+                    if(i*(num[0]/10) + num[0]%10 - (i*(num[1]/10) + num[1]%10) != i*i*(num[2]/100) + i*(num[2]%100/10) + num[2]%10)
+                        nums[i] = -1;
+                }
+            }
+        }
+    }
+    
+    for(int j = 0 ;j<arr.size();j++){
+        auto num = arr[j];
+        int res = -1;
+        for(int i=num[4];i<10;i++){
+            if(num[2] == -1 and nums[i] == 0){
+                if(num[3] == 1) {
+                    if (res == -1){
+                        res = i*(num[0]/10) + num[0]%10 + i*(num[1]/10) + num[1]%10;
+                        res = 100 *(res/(i*i)) + 10*(res%(i*i)/i) + (res%i);
+                        }
+                    else{
+                        int tmp = i*(num[0]/10) + num[0]%10 + i*(num[1]/10) + num[1]%10;
+                        if (res != 100 *(tmp/(i*i)) + 10*((tmp % (i*i)) / i) + (tmp%i)){
+                        res = -1;
+                        break;
+                        }
+                    }
+                }
+                else if(num[3] == -1){
+                    if (res == -1){
+                        res = i*(num[0]/10) + num[0]%10 - i*(num[1]/10) - num[1]%10;
+                        res = 100 *(res/(i*i)) + 10*(res%(i*i)/i) + (res%i);
+                        }
+                    else{
+                        int tmp = i*(num[0]/10) + num[0]%10 - i*(num[1]/10) - num[1]%10;
+                        if (res != 100 *(tmp/(i*i)) + 10*((tmp % (i*i)) / i) + (tmp%i)){
+                        res = -1;
+                        break;
+                        }
+                    }
+                }
+            }
+        }
+        if (num[2] != -1) continue;
+        string ans = "";
+        if (res == -1){
+            ans += to_string(num[0]);
+            if(num[3] == 1) ans += " + ";
+            else ans+= " - ";
+            ans += to_string(num[1]);
+            ans += " = ?";
+        }
+        else{
+            ans += to_string(num[0]);
+            if(num[3] == 1) ans += " + ";
+            else ans+= " - ";
+            ans += to_string(num[1]);
+            ans += " = ";
+            ans += to_string(res);
+        }
+        answer.push_back(ans);
+    }
+    
+    
+    
+    return answer;
+}
