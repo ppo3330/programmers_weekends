@@ -1,0 +1,54 @@
+#O(C(n,n/2) * 6^(n/2) ),   6^(n/2)는 선택된 n/2개의 주사위가 만들 수 있는 모든 경우의 수
+
+#단순하게는 모든 조합들을 찾아서 비교하는 것임
+#조합을 찾고, 그 조합에서 나올수있는 합들의 조합을 찾고, Asum, Bsum을 비교하는데 이를 lowerbound로 해야 시간안에 가능 n^2이 되는데 n <= 6^5 이므로​
+
+#어렵다...
+#처음에는 문제를 잘못 이해했고, 이후에는 구현을 할때 실수가 많았음.
+#생각보다 문제 자체가 어렵지는 않았는데 실수를 많이 발생하게 만드는 문제였다.
+
+from bisect import bisect_left
+from itertools import combinations
+
+def solution(dice):
+    answer = []
+    n = len(dice)
+    mx = -1
+    
+    for comb in combinations(range(n), n//2):
+        A = list(comb)
+        B = [i for i in range(n) if i not in A]
+        
+        A_sums = []
+        B_sums = []
+        def dfsA(idx, total):
+            if idx == len(A):
+                A_sums.append(total)
+                return
+            for face in dice[A[idx]]:
+                dfsA(idx+1, total+face)
+        
+        def dfsB(idx, total):
+            if idx == len(B):
+                B_sums.append(total)
+                return
+            for face in dice[B[idx]]:
+                dfsB(idx+1, total+face)
+        
+        dfsA(0, 0)
+        dfsB(0, 0)
+        
+        A_sums.sort()
+        B_sums.sort()
+        
+        win = 0
+        for i in A_sums:
+            idx = bisect_left(B_sums,i)
+            win += idx
+        
+        if win > mx:
+            mx = win
+            answer = A
+    for i in range(len(answer)):
+        answer[i]+=1
+    return answer
