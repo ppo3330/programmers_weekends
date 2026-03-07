@@ -1,0 +1,90 @@
+//O(N^2)
+
+//현재 손에서 뽑는것, 테이블에서 하나 , 두개 뽑는 경우가 있는데
+//적게 뽑는것이 좋음, 테이블에는 이전에 넘어갔던 부분도 남아있기에 문제해결가능
+//이를통해 그리디 알고리즘 사용
+
+//처음에 bfs로 모든 경우의수를 구하려고했지만 수가 늘어나면 경우의수 증가로 시간초과.
+
+#include <string>
+#include <vector>
+#include <set>
+
+using namespace std;
+
+int solution(int coin, vector<int> cards) {
+    int answer = 1;
+    int n = cards.size();
+    int aim = n+1;
+    int idx = n/3;
+
+    set<int> hand;
+    set<int> table;
+    for(int i=0;i<idx;i++){
+        hand.insert(cards[i]);
+    }
+    
+    
+    while(idx<n){
+        table.insert(cards[idx++]);
+        table.insert(cards[idx++]);
+        
+        bool success = false;
+        
+        for(int x: hand){
+            if(hand.count(aim-x)){
+                if(x != aim-x){
+                    hand.erase(x);
+                    hand.erase(aim-x);
+                    success = true;
+                    break;                   
+                }
+            }
+        }
+        if(success){
+            answer++;
+            continue;
+        }
+        
+        if(coin >= 1){
+            for(int x: hand){
+                if(table.count(aim-x)){
+                    if(x != aim-x){
+                        hand.erase(x);
+                        table.erase(aim-x);
+                        success = true;
+                        coin-=1;
+                        break;                   
+                    }
+                }
+            }
+        }
+        if(success){
+            answer++;
+            continue;
+        }
+        
+        
+        if(coin >=2){
+            for(int x: table){
+                if(table.count(aim-x)){
+                    if(x != aim-x){
+                        table.erase(x);
+                        table.erase(aim-x);
+                        success = true;
+                        coin-=2;
+                        break;                   
+                    }
+                }
+            }
+        }
+        if(success){
+            answer++;
+            continue;
+        }
+        else
+            break;
+    }
+    
+    return answer;
+}
