@@ -1,3 +1,9 @@
+//O(N log N)
+
+//minheap기억하기
+//스택으로도 풀 수 있음
+
+
 #include <string>
 #include <vector>
 #include <queue>
