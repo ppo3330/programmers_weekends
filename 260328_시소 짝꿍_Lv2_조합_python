@@ -1,0 +1,33 @@
+#O(N)
+
+#counter로 무개별 인원을 구하고
+#비율에 맞으면 +, 같은 수는 N*(N-1)//2로 계산 (같은 수에서 조합)
+
+#from collections import Counter 기억
+
+
+from collections import Counter
+
+def solution(weights):
+    answer = 0
+     
+    counter = Counter(weights)
+    for w in counter:
+        answer += counter[w] * (counter[w] - 1) // 2
+            
+    for w in counter:
+        c = counter[w]
+        if w * 2 % 3 == 0:
+            target = (w * 2) // 3
+            if target in counter:
+                answer += c * counter[target]
+        if w * 2 % 4 == 0:
+            target = (w * 2) // 4
+            if target in counter:
+                answer += c * counter[target]
+        if w * 3 % 4 == 0:
+            target = (w * 3) // 4
+            if target in counter:
+                answer += c * counter[target]
+                
+    return answer
